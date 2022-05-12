@@ -13,9 +13,7 @@ export enum FlightPlanIndex {
 }
 
 export class FlightPlanManager {
-    private plans: FlightPlan[] = [
-        FlightPlan.empty(),
-    ]
+    private plans: FlightPlan[] = []
 
     has(index: number) {
         return this.plans[index] !== undefined;

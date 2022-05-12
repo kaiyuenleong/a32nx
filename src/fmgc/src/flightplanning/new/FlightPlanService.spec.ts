@@ -8,13 +8,17 @@ import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
 import { FlightPlanIndex } from '@fmgc/flightplanning/new/FlightPlanManager';
 import { loadSingleWaypoint } from '@fmgc/flightplanning/new/segments/enroute/WaypointLoading';
 import { assertDiscontinuity, assertNotDiscontinuity } from '@fmgc/flightplanning/new/test/LegUtils';
+import { setupNavigraphDatabase } from '@fmgc/flightplanning/new/test/Database';
 
 if (!globalThis.fetch) {
     globalThis.fetch = fetch;
 }
 
 describe('the flight plan service', () => {
-    beforeEach(() => FlightPlanService.reset());
+    beforeEach(() => {
+        FlightPlanService.reset();
+        setupNavigraphDatabase();
+    });
 
     it('deletes the temporary flight plan properly', async () => {
         await FlightPlanService.newCityPair('CYUL', 'LOWI', 'LOWG');

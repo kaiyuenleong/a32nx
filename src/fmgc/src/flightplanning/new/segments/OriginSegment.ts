@@ -3,13 +3,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 
-import { Airport, Database, ExternalBackend, Runway } from 'msfs-navdata';
+import { Airport, Runway } from 'msfs-navdata';
 import { FlightPlanSegment } from '@fmgc/flightplanning/new/segments/FlightPlanSegment';
 import { loadAirport, loadAllDepartures, loadAllRunways, loadRunway } from '@fmgc/flightplanning/new/DataLoading';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
-import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
 import { FlightPlanElement, FlightPlanLeg } from '../legs/FlightPlanLeg';
+import { NavigationDatabaseService } from '../NavigationDatabaseService';
 
 export class OriginSegment extends FlightPlanSegment {
     class = SegmentClass.Departure
@@ -56,7 +56,7 @@ export class OriginSegment extends FlightPlanSegment {
     }
 
     async refreshOriginLegs() {
-        const db = FlightPlanService.navigationDatabase.backendDatabase;
+        const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
         this.allLegs.length = 0;
         this.allLegs.push(FlightPlanLeg.fromAirportAndRunway(this, this.flightPlan.departureSegment.originDeparture?.ident ?? '', this.originAirport, this.runway));
@@ -99,17 +99,5 @@ export class OriginSegment extends FlightPlanSegment {
         newSegment.runway = this.runway;
 
         return newSegment;
-    }
-
-    removeRange(_from: number, _to: number) {
-        throw new Error('Not implemented');
-    }
-
-    removeAfter(_from: number) {
-        throw new Error('Not implemented');
-    }
-
-    removeBefore(_before: number) {
-        throw new Error('Not implemented');
     }
 }

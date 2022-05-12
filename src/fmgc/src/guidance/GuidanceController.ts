@@ -110,7 +110,7 @@ export class GuidanceController {
 
         const matchingLeg = FlightPlanService.active.elementAt(focusedWpIndex);
 
-        if (!matchingLeg || matchingLeg.isDiscontinuity === true || !matchingLeg.isXf()) {
+        if (!matchingLeg || matchingLeg.isDiscontinuity === true || !matchingLeg.isXF()) {
             return;
         }
 

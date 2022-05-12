@@ -8,12 +8,17 @@ import { loadSingleWaypoint } from '@fmgc/flightplanning/new/segments/enroute/Wa
 import { loadAirwayLegs } from '@fmgc/flightplanning/new/segments/enroute/AirwayLoading';
 import { FlightPlan } from '@fmgc/flightplanning/new/plans/FlightPlan';
 import { FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
+import { setupNavigraphDatabase } from '@fmgc/flightplanning/new/test/Database';
 
 if (!globalThis.fetch) {
     globalThis.fetch = fetch;
 }
 
 describe('an enroute segment', () => {
+    beforeAll(() => {
+        setupNavigraphDatabase();
+    });
+
     it('should insert waypoint sequentially', async () => {
         const segment = FlightPlan.empty().enrouteSegment;
 

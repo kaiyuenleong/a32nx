@@ -119,7 +119,7 @@ export abstract class BaseFlightPlan {
     }
 
     hasElement(index: number): boolean {
-        return index >= 0 && index <= this.allLegs.length;
+        return index >= 0 && index < this.allLegs.length;
     }
 
     elementAt(index: number): FlightPlanElement {
@@ -381,10 +381,20 @@ export abstract class BaseFlightPlan {
         return this.destinationSegment.setDestinationRunway(runwayIdent).then(() => this.incrementVersion());
     }
 
-    removeElementAt(index: number): boolean {
+    removeElementAt(index: number, insertDiscontinuity = false): boolean {
         const [segment, indexInSegment] = this.segmentPositionForIndex(index);
 
-        segment.allLegs.splice(indexInSegment, 1);
+        if (insertDiscontinuity && index > 0) {
+            const previousElement = this.elementAt(index - 1);
+
+            if (previousElement.isDiscontinuity === false) {
+                segment.allLegs.splice(indexInSegment, 1, { isDiscontinuity: true });
+            } else {
+                segment.allLegs.splice(indexInSegment, 1);
+            }
+        } else {
+            segment.allLegs.splice(indexInSegment, 1);
+        }
 
         this.incrementVersion();
 
@@ -425,6 +435,10 @@ export abstract class BaseFlightPlan {
      * @param index point at which to redistribute
      */
     redistributeLegsAt(index: number) {
+        if (!this.hasElement(index)) {
+            return;
+        }
+
         const [segment, indexInSegment] = this.segmentPositionForIndex(index);
 
         if (segment.class === SegmentClass.Departure) {
@@ -590,18 +604,27 @@ export abstract class BaseFlightPlan {
                 continue;
             }
 
-            if (lastLegInFirst.isXf() && element.isXf()) {
+            const bothXf = lastLegInFirst.isXF() && element.isXF();
+
+            if (bothXf) {
                 if (element.terminatesWithWaypoint(lastLegInFirst.terminationWaypoint())) {
+                    first.allLegs.pop();
                     cutBefore = i;
                     break;
                 }
+            }
+
+            const xfToFx = lastLegInFirst.isXF() && element.isFX();
+
+            if (xfToFx) {
+                cutBefore = 0;
+                break;
             }
         }
 
         // If not matching leg is found, insert a discontinuity (if there isn't one already) at the end of the first segment
         if (cutBefore === -1) {
             if (lastElementInFirst.isDiscontinuity === false) {
-                debugger;
                 first.allLegs.push({ isDiscontinuity: true });
             }
 
@@ -613,7 +636,6 @@ export abstract class BaseFlightPlan {
         if (lastElementInFirst.isDiscontinuity === true) {
             first.allLegs.pop();
         }
-        first.allLegs.pop();
 
         for (let i = 0; i < cutBefore; i++) {
             second.allLegs.shift();

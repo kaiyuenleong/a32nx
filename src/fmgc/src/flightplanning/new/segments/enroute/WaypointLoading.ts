@@ -3,13 +3,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 
-import { Database, ExternalBackend, GlsNavaid, IlsNavaid, NdbNavaid, VhfNavaid, Waypoint } from 'msfs-navdata';
+import { GlsNavaid, IlsNavaid, NdbNavaid, VhfNavaid, Waypoint } from 'msfs-navdata';
+import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
+import { NavigationDatabaseService } from '../../NavigationDatabaseService';
 
 /**
  * Loads waypoints with a specified ident from the nav database, returning all matches
  */
 export async function loadWaypoints(waypointIdent: string): Promise<Fix[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const waypoints = await db.getWaypoints([waypointIdent]);
 
@@ -22,7 +24,7 @@ export async function loadWaypoints(waypointIdent: string): Promise<Fix[]> {
  * @throws if no results are found or none have the specified database ID
  */
 export async function loadSingleWaypoint(waypointIdent: string, databaseId: string): Promise<Waypoint> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const waypoints = await db.getWaypoints([waypointIdent]);
 
@@ -45,7 +47,7 @@ export type Fix = Waypoint | VhfNavaid | NdbNavaid | IlsNavaid | GlsNavaid
  * Loads fixes (either a waypoint, VHF navaid, NDB, ILS or GLS) with a specified ident from the nav database, returning all matches
  */
 export async function loadFixes(fixIDent: string): Promise<Fix[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const navaids = await db.getNavaids([fixIDent]);
     const ndbs = await db.getNDBs([fixIDent]);

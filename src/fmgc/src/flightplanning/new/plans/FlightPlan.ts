@@ -59,26 +59,6 @@ export class FlightPlan extends BaseFlightPlan {
         return this.alternateFlightPlan.setDestinationAirport(icao);
     }
 
-    insertWaypointAfter(index: number, waypoint: Waypoint) {
-        if (index < 0 || index > this.allLegs.length) {
-            throw new Error(`[FMS/FPM] Tried to insert waypoint out of bounds (index=${index})`);
-        }
-
-        const duplicate = this.findDuplicate(waypoint);
-
-        if (duplicate) {
-            const [startSegment, indexInStartSegment] = this.getIndexInSegment(index);
-            const [endSegment, indexInEndSegment] = duplicate;
-
-            if (startSegment === endSegment) {
-                startSegment.removeRange(indexInStartSegment + 1, indexInEndSegment);
-            } else {
-                startSegment.removeAfter(indexInStartSegment + 1);
-                endSegment.removeRange(0, indexInEndSegment);
-            }
-        }
-    }
-
     insertElementAfter(index: number, element: FlightPlanElement, insertDiscontinuity = false) {
         if (index < 0 || index > this.allLegs.length) {
             throw new Error(`[FMS/FPM] Tried to insert waypoint out of bounds (index=${index})`);
@@ -95,7 +75,7 @@ export class FlightPlan extends BaseFlightPlan {
             return;
         }
 
-        if (element.isDiscontinuity === false && element.isXf()) {
+        if (element.isDiscontinuity === false && element.isXF()) {
             const duplicate = this.findDuplicate(element.terminationWaypoint(), index + 1);
 
             if (duplicate) {
@@ -103,18 +83,22 @@ export class FlightPlan extends BaseFlightPlan {
 
                 this.removeRange(index + 2, duplicatePlanIndex + 1);
             } else {
-                startSegment.insertAfter(indexInStartSegment + 2, { isDiscontinuity: true });
+                startSegment.insertAfter(indexInStartSegment + 1, { isDiscontinuity: true });
             }
         }
 
-        this.redistributeLegsAt(index + 1);
         this.incrementVersion();
+        this.redistributeLegsAt(index + 1);
     }
 
     private getIndexInSegment(index: number): [segment: FlightPlanSegment, index: number] {
         let accumulator = 0;
 
         for (const segment of this.orderedSegments) {
+            if (segment.allLegs.length === 0) {
+                continue;
+            }
+
             accumulator += segment.allLegs.length;
 
             if (accumulator >= index) {
@@ -134,7 +118,7 @@ export class FlightPlan extends BaseFlightPlan {
             indexAccumulator += segment.allLegs.length;
 
             if (indexAccumulator > afterIndex) {
-                const dupeIndexInSegment = segment.findIndexOfWaypoint(waypoint, afterIndex - indexAccumulator);
+                const dupeIndexInSegment = segment.findIndexOfWaypoint(waypoint, afterIndex - (indexAccumulator - segment.allLegs.length));
 
                 const planIndex = indexAccumulator - segment.allLegs.length + dupeIndexInSegment;
 

@@ -42,7 +42,7 @@ export namespace GeometryFactory {
                 continue;
             }
 
-            if (element.isXf()) {
+            if (element.isXF()) {
                 const fixLocation = element.terminationWaypoint().location;
 
                 runningMagvar = Facilities.getMagVar(fixLocation.lat, fixLocation.lon);
@@ -84,7 +84,7 @@ export namespace GeometryFactory {
 
             const planLeg = flightPlan.allLegs[i];
 
-            if (planLeg.isDiscontinuity === false && planLeg.isXf()) {
+            if (planLeg.isDiscontinuity === false && planLeg.isXF()) {
                 const fixLocation = planLeg.terminationWaypoint().location;
 
                 runningMagvar = Facilities.getMagVar(fixLocation.lat, fixLocation.lon);
@@ -260,7 +260,7 @@ function geometryLegFromFlightPlanLeg(runningMagvar: Degrees, previousFlightPlan
     case LegType.TF: {
         const prev = previousFlightPlanLeg as FlightPlanLeg;
 
-        if (!prev.isXf()) {
+        if (!prev.isXF()) {
             throw new Error('[FMS/Geometry] Cannot create a TF leg after a non-XF leg');
         }
 

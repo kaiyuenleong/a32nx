@@ -3,13 +3,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 
-import { Database, Departure, ExternalBackend } from 'msfs-navdata';
+import { Departure } from 'msfs-navdata';
 import { FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { FlightPlanSegment } from '@fmgc/flightplanning/new/segments/FlightPlanSegment';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
-import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
-import { FlightPlan } from '../plans/FlightPlan';
+import { NavigationDatabaseService } from '../NavigationDatabaseService';
 
 export class DepartureSegment extends FlightPlanSegment {
     class = SegmentClass.Departure
@@ -36,7 +35,7 @@ export class DepartureSegment extends FlightPlanSegment {
             return;
         }
 
-        const db = FlightPlanService.navigationDatabase.backendDatabase;
+        const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
         if (!this.flightPlan.originAirport || !this.flightPlan.originRunway) {
             throw new Error('[FMS/FPM] Cannot set departure procedure without origin airport and runway');

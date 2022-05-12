@@ -8,7 +8,7 @@ import { FlightPlanSegment } from '@fmgc/flightplanning/new/segments/FlightPlanS
 import { FlightPlanElement, FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
-import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
+import { NavigationDatabaseService } from '../NavigationDatabaseService';
 
 export class ArrivalSegment extends FlightPlanSegment {
     class = SegmentClass.Arrival
@@ -35,7 +35,7 @@ export class ArrivalSegment extends FlightPlanSegment {
             return;
         }
 
-        const db = FlightPlanService.navigationDatabase.backendDatabase;
+        const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
         const { destinationAirport, destinationRunway } = this.flightPlan.destinationSegment;
 

@@ -3,9 +3,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 
-import { Database, ExternalBackend, Waypoint } from 'msfs-navdata';
+import { Waypoint } from 'msfs-navdata';
 import { FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { EnrouteSegment } from '@fmgc/flightplanning/new/segments/EnrouteSegment';
+import { NavigationDatabaseService } from '../../NavigationDatabaseService';
 
 /**
  * Loads legs from a specified airway, starting and ending at specified waypoints
@@ -17,7 +18,7 @@ import { EnrouteSegment } from '@fmgc/flightplanning/new/segments/EnrouteSegment
  * @param viaDatabaseId           the database id of the ending waypoint on the airway to stop loading legs at
  */
 export async function loadAirwayLegs(inSegment: EnrouteSegment, airwayIdent: string, databaseId: string, startWaypointDatabaseId: string, viaDatabaseId: string): Promise<FlightPlanLeg[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const airways = await db.getAirways([airwayIdent]);
 

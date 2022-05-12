@@ -53,8 +53,9 @@ class NavSystem extends BaseInstrument {
         // this.currFlightPlan = new Fmgc.ManagedFlightPlan(); // TODO: DEPRECATE
         this.currFlightPhaseManager = Fmgc.getFlightPhaseManager();
         this.currFlightPlanService = Fmgc.FlightPlanService;
+        this.currNavigationDatabaseService = Fmgc.NavigationDatabaseService;
         this.navigationDatabase = new Fmgc.NavigationDatabase(Fmgc.NavigationDatabaseBackend.Navigraph);
-        this.currFlightPlanService.navigationDatabase = this.navigationDatabase;
+        this.currNavigationDatabaseService.activeDatabase = this.navigationDatabase;
     }
     get flightPhaseManager() {
         return this.currFlightPhaseManager;

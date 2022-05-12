@@ -8,7 +8,7 @@ import { FlightPlanSegment } from '@fmgc/flightplanning/new/segments/FlightPlanS
 import { FlightPlanElement, FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
-import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
+import { NavigationDatabaseService } from '../NavigationDatabaseService';
 
 export class ApproachSegment extends FlightPlanSegment {
     class = SegmentClass.Arrival
@@ -28,7 +28,7 @@ export class ApproachSegment extends FlightPlanSegment {
     }
 
     async setApproachProcedure(procedureIdent: string | undefined) {
-        const db = FlightPlanService.navigationDatabase.backendDatabase;
+        const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
         if (procedureIdent === undefined) {
             this.flightPlan.approachViaSegment.setApproachVia(undefined);

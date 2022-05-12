@@ -37,17 +37,23 @@ export class FlightPlanLeg {
     /**
      * Determines whether this leg is a fix-terminating leg (AF, CF, DF, RF, TF)
      */
-    isXf() {
+    isXF() {
         const legType = this.definition.type;
 
         return legType === LegType.AF || legType === LegType.CF || legType === LegType.IF || legType === LegType.DF || legType === LegType.RF || legType === LegType.TF;
+    }
+
+    isFX() {
+        const legType = this.definition.type;
+
+        return legType === LegType.FA || legType === LegType.FC || legType === LegType.FD || legType === LegType.FM;
     }
 
     /**
      * Returns the termination waypoint is this is an XF leg, `null` otherwise
      */
     terminationWaypoint(): Waypoint | null {
-        if (!this.isXf()) {
+        if (!this.isXF()) {
             return null;
         }
 
@@ -60,7 +66,7 @@ export class FlightPlanLeg {
      * @param waypoint the specified waypoint
      */
     terminatesWithWaypoint(waypoint: Waypoint) {
-        if (!this.isXf()) {
+        if (!this.isXF()) {
             return false;
         }
 

@@ -7,12 +7,17 @@ import fetch from 'node-fetch';
 
 import { loadFixes, loadSingleWaypoint } from '@fmgc/flightplanning/new/segments/enroute/WaypointLoading';
 import { VhfNavaid } from 'msfs-navdata';
+import { setupNavigraphDatabase } from '@fmgc/flightplanning/new/test/Database';
 
 if (!globalThis.fetch) {
     globalThis.fetch = fetch;
 }
 
 describe('waypoint loading', () => {
+    beforeAll(() => {
+        setupNavigraphDatabase();
+    });
+
     it('can load waypoint NOSUS', async () => {
         const element = await loadSingleWaypoint('NOSUS', 'WCYCYULNOSUS');
 

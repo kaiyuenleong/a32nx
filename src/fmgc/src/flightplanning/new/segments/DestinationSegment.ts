@@ -8,8 +8,8 @@ import { FlightPlanElement, FlightPlanLeg } from '@fmgc/flightplanning/new/legs/
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
 import { loadAllApproaches, loadAllArrivals, loadAllRunways } from '@fmgc/flightplanning/new/DataLoading';
-import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
 import { FlightPlanSegment } from './FlightPlanSegment';
+import { NavigationDatabaseService } from '../NavigationDatabaseService';
 
 export class DestinationSegment extends FlightPlanSegment {
     class = SegmentClass.Arrival
@@ -29,7 +29,7 @@ export class DestinationSegment extends FlightPlanSegment {
     }
 
     public async setDestinationIcao(icao: string) {
-        const db = FlightPlanService.navigationDatabase.backendDatabase;
+        const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
         const airports = await db.getAirports([icao]);
         const airport = airports.find((a) => a.ident === icao);
@@ -55,10 +55,10 @@ export class DestinationSegment extends FlightPlanSegment {
     }
 
     public async setDestinationRunway(runwayIdent: string) {
-        const db = FlightPlanService.navigationDatabase.backendDatabase;
+        const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
         if (!this.airport) {
-            throw new Error('[FMS/FPM] Cannot set origin runway without origin airport');
+            throw new Error('[FMS/FPM] Cannot set destination runway without destination airport');
         }
 
         const runways = await db.getRunways(this.airport.ident);

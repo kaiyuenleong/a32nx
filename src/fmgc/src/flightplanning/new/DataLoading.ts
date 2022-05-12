@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0
 
 import { Airport, Approach, Arrival, Departure, Runway } from 'msfs-navdata';
-import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
+import { NavigationDatabaseService } from '@fmgc/flightplanning/new/NavigationDatabaseService';
 
 /**
  * Loads an airport from the navigation database
@@ -14,7 +14,7 @@ import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
  * @throws if the airport is not found
  */
 export async function loadAirport(icao: string): Promise<Airport> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const airports = await db.getAirports([icao]);
     const matchingAirport = airports.find((a) => a.ident === icao);
@@ -32,7 +32,7 @@ export async function loadAirport(icao: string): Promise<Airport> {
  * @param airport Airport object
  */
 export async function loadAllRunways(airport: Airport): Promise<Runway[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const runways = await db.getRunways(airport.ident);
 
@@ -48,7 +48,7 @@ export async function loadAllRunways(airport: Airport): Promise<Runway[]> {
  * @throws if the runway is not found
  */
 export async function loadRunway(airport: Airport, runwayIdent: string): Promise<Runway> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const runways = await db.getRunways(airport.ident);
     const matchingRunway = runways.find((runway) => runway.ident === runwayIdent);
@@ -66,7 +66,7 @@ export async function loadRunway(airport: Airport, runwayIdent: string): Promise
  * @param airport Airport object
  */
 export async function loadAllDepartures(airport: Airport): Promise<Departure[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const proceduresAtAirport = await db.getDepartures(airport.ident);
 
@@ -79,7 +79,7 @@ export async function loadAllDepartures(airport: Airport): Promise<Departure[]> 
  * @param airport Airport object
  */
 export async function loadAllArrivals(airport: Airport): Promise<Arrival[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const proceduresAtAirport = await db.getArrivals(airport.ident);
 
@@ -92,7 +92,7 @@ export async function loadAllArrivals(airport: Airport): Promise<Arrival[]> {
  * @param airport Airport object
  */
 export async function loadAllApproaches(airport: Airport): Promise<Approach[]> {
-    const db = FlightPlanService.navigationDatabase.backendDatabase;
+    const db = NavigationDatabaseService.activeDatabase.backendDatabase;
 
     const proceduresAtAirport = await db.getApproaches(airport.ident);
 

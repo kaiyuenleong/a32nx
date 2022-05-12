@@ -369,7 +369,7 @@ export class EfisSymbols {
                     //     }
                     // }
 
-                    if (!wp.isXf() || !withinEditArea(fixCoordinates(wp.terminationWaypoint().location))) {
+                    if (!wp.isXF() || !withinEditArea(fixCoordinates(wp.terminationWaypoint().location))) {
                         continue;
                     }
 
